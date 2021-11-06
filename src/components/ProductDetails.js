@@ -1,12 +1,28 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import products from "../products.json";
+import { queryApi } from "../utils/queryApi";
 import Product from "./Product";
 export default function ProductDetails(props) {
-  const name = props.match.params.name; /*We used props.match.params.name; 
+  const id = props.match.params.id; /*We used props.match.params.name; 
  This is given by the react-router-dom and will help us get relevant information about our navigation 
  behavior. The router will automatically match the passes prop to the name we assigned in the Route. */
-  const toRender = products.filter((product) => product.name === name)[0];
+ const [error, setError] = useState({ visible: false, message: "" });
+ const [toRender, setToRender] = useState({});
+
+  // const toRender = products.filter((product) => product.title === name)[0];
+  useEffect(() => {
+    async function fetchData() {
+      const [res, err] = await queryApi("product/" + id);
+      setError({
+        visible: true,
+        message: JSON.stringify(err?.errors, null, 2),
+      });
+      setToRender(res);
+    }
+    fetchData();
+    // eslint-disable-next-line
+  }, [id]);
   return (
     <>
       {/* We also have a “history” prop that contains the history of our page navigation */}
@@ -14,11 +30,19 @@ export default function ProductDetails(props) {
       <Container>
         {toRender ? (
           <>
-
+         
           <ContentBox>
-        <Content1><img src={toRender.img} width="600" height="600" alt={toRender.name}/></Content1>
+          
+        <Content1><img src={
+ process.env.REACT_APP_API_URL_UPLOADS + "/" + toRender.image
+ } width="600" height="600" alt={toRender.name}/></Content1>
         <Content2>
-        <H1>{toRender.name}</H1>
+        <Footer>
+        <Button onClick={() => props.history.replace("/products")}>
+        Return to products
+      </Button>
+        </Footer>
+        <H1>{toRender.title}</H1>
         <H3>Description 
         :</H3>
         <Span>{toRender.description}</Span>
@@ -27,14 +51,15 @@ export default function ProductDetails(props) {
         <Span> {toRender.price} DT </Span>
         <H3>Likes 
         :</H3>
-        <Span>{toRender.likes}</Span>
+        <Span>{toRender.likes}</Span><br></br>
+        <Action>
+          
+     
+        </Action>
+       
         </Content2>
         </ContentBox>
-        <Footer>
-        <Button onClick={() => props.history.replace("/products")}>
-        Return to products
-      </Button>
-        </Footer>
+        
           </>
           
         ) : (
@@ -97,6 +122,13 @@ const Footer = styled.footer`
   text-align: right !important;
 
 `;
+const Action = styled.footer`
+  background: transparent;
+  grid-area: footer;
+  padding: 0.25rem;
+  text-align: right !important;
+
+`;
 const Button = styled.button`
   /* Adapt the colors based on primary prop */
   background: ${props => props.primary ? "palevioletred" : "white"};
@@ -108,6 +140,8 @@ const Button = styled.button`
   border: 2px solid palevioletred;
   border-radius: 3px;
 `;
+
+
 
 const H1 = styled.h1`
 

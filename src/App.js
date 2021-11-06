@@ -81,7 +81,11 @@ the pages if we have a lot of conditional rendering. */
 const Home = React.lazy(() => import("./Home"));
 const Products = React.lazy(() => import("./Products"));
 const ProductDetails = React.lazy(() => import("./components/ProductDetails"));
+const AddProduct = React.lazy(() => import("./components/AddProduct"));
+const UpdateProduct = React.lazy(() => import("./components/UpdateProduct"));
+
 function App() {
+
   return (
     <>
     <Header></Header>
@@ -110,9 +114,17 @@ our page will render <p>Default rendered page!</p> */}
               render={(props) => <Products {...props} />}
             ></Route>
             <Route
-              path="/product/:name"
+              path="/product/:id"
               render={(props) => <ProductDetails {...props} />}
             ></Route>
+             <Route
+                    path="/add"
+                    render={(props) => <AddProduct {...props} />}
+                  ></Route>
+                   <Route
+                    path="/update/:id"
+                    render={(props) => <UpdateProduct {...props} />}
+                  ></Route>
             <Route exact render={() => <p>Page not found!</p>}></Route>
           </Switch>
         </Suspense>
