@@ -155,7 +155,6 @@ export const CardButton = styled.button`
     transform: translate(0, -5px);
   }
 `;
-
 const AddItem = styled.button`
   /* Adapt the colors based on primary prop */
   background: ${props => props.primary ? "green" : "white"};
