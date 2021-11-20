@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import {
+  
+  selectProduct,
+  
+  } from "../redux/slices/productsSlice";
+import { useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { increment } from "../redux/slices/cartSlice";
 export default function Product(props) {
+  
 
+  const history = useHistory();
+  const dispatch = useDispatch();
   const [product, setProduct] = useState(props.product);
   const [updated, setUpdated] = useState(0);
-  useEffect(() => {
-    console.log(props)
-    console.log(
-      "I have finished rendering " +
-        props.product.title +
-        " price: " +
-        props.product.price
-    );
-    return () => {
-      console.log("I'm being destroyed");
-    };
-  });
+ 
   const addLike = () => {
     setProduct({
       ...product,
@@ -23,6 +23,16 @@ export default function Product(props) {
     });
     setUpdated((u) => u + 1);
   };
+  const updateProduct = () => {
+    dispatch(selectProduct(product));
+    console.log("product",product);
+    history.replace("/update/" + product._id);
+    };
+    const addToCart = (p) => {
+      
+      dispatch(increment(p));
+     
+      };
   useEffect(() => {
     console.log(updated);
   }, [updated]);
@@ -40,11 +50,11 @@ export default function Product(props) {
         <span>
           <a href={"/product/" + product._id}>{product.title}</a>
         </span>
-        <span> {product.price} </span>
+        <span> {product.price} DT </span>
         <span>Likes : {product.likes} </span>
         <Button onClick={addLike}>Like</Button>
         <Action>
-        <ButtonUpdate onClick={() => props.history.replace("/update/" + product._id)}>
+        <ButtonUpdate onClick={updateProduct}>
         Update
       </ButtonUpdate>
         <ButtonDelete onClick={() => props.deleteProduct(product._id)}>
@@ -60,16 +70,19 @@ export default function Product(props) {
         <ProductImage src={
  process.env.REACT_APP_API_URL_UPLOADS + "/" + product.image
  }></ProductImage>
+ 
       </ProductImageWrapper>
       <ProductInfoWrapper>
+     
         <span>
           <a href={"/product/" + product._id}>{product.title}</a>
         </span>
-        <span> {product.price} </span>
+        <span> {product.price} DT </span>
         <span>Likes : {product.likes} </span>
+                         
         <Button onClick={addLike}>Like</Button>
         <Action>
-        <ButtonUpdate onClick={() => props.history.replace("/update/" + product._id)}>
+        <ButtonUpdate onClick={updateProduct}>
         Update
       </ButtonUpdate>
         <ButtonDelete onClick={() => props.deleteProduct(product._id)}>
@@ -77,7 +90,7 @@ export default function Product(props) {
       </ButtonDelete>
       
         </Action>
-       
+        <ButtonCart onClick={()=>addToCart(product)}>ADD TO CART + </ButtonCart>
       </ProductInfoWrapper>
     </ProductFrame>
     )
@@ -183,4 +196,15 @@ const ButtonUpdate = styled.button`
   padding: 0.25em 1em;
   border: 2px solid blue;
   border-radius: 3px;
+`;
+const ButtonCart = styled.button`
+  /* Adapt the colors based on primary prop */
+  background: ${props => props.primary ? "green" : "white"};
+  color: ${props => props.primary ? "white" : "green"};
+  font-size: 1.1em;
+  margin: 1em;
+  padding: 0.25em 1em;
+  border: 2px solid green;
+  border-radius: 20px;
+  cursor: pointer;
 `;

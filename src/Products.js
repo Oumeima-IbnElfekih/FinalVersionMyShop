@@ -4,16 +4,15 @@ import products from "./products.json";
 import Product from "./components/Product";
 import { useApi } from "./hooks/useApi";
 import { queryApi } from "./utils/queryApi";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteProduct, selectProducts } from "../src/redux/slices/productsSlice";
 export default function Products(props) {
-  const [products, err, reload] = useApi("products");
+  const [products, err] = useSelector(selectProducts);
   const [text, setText] = React.useState("");
   const [search, setSearch] = React.useState("");
-  //Exemple 1
-  // const filteredProducts = products?.filter((product) => {
-  //   return search ? product.title.toLowerCase().includes(search.toLowerCase()):products;
-  // });
-
-  //Exemple Use Memor
+  
+  const dispatch = useDispatch();
+  
   const filteredProducts = useMemo(
     () => {
       if(!search) return products;
@@ -24,19 +23,18 @@ export default function Products(props) {
         },
     [search,products]
   );
-  // const handleText = (event) => {
-  //   setSearch(event.target.value);
-  // };
+  
   const handleSearch = (event) => {
     setSearch(event.target.value);
     console.log(search);
   };
-  const deleteProduct = async (id) => {
+  const deleProduct = async (id) => {
     console.log(id);
-    const [err] = await queryApi("product/" + id, {}, "DELETE");
+    const [res,err] = await queryApi("product/" + id, {}, "DELETE");
     if (err) {
-      console.log(err);
-    } else await reload();
+      console.log("err",err);
+    } else 
+    {dispatch(deleteProduct(id))} 
   };
   return (
     <>
@@ -76,7 +74,7 @@ export default function Products(props) {
           <Product
             {...props}
             product={product}
-            deleteProduct={deleteProduct}
+            deleteProduct={deleProduct}
             key={index}
           ></Product>
         ))}{" "}

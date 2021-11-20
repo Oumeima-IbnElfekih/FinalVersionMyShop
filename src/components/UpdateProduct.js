@@ -3,7 +3,14 @@ import styled from "styled-components";
 import { useState } from "react";
 import { useHistory,useParams } from "react-router-dom";
 import { queryApi } from "../utils/queryApi";
+import { useDispatch, useSelector } from "react-redux";
+import {
+selectSelectedProduct,
+updateProduct,
+} from "../redux/slices/productsSlice";
 export default function UpdateProduct() {
+  const selectedProduct = useSelector(selectSelectedProduct);
+  const dispatch = useDispatch();
   const { id } = useParams();
   const history = useHistory();
   const [showLoader, setShowLoader] = useState(false);
@@ -23,29 +30,27 @@ export default function UpdateProduct() {
   const onSubmit = async (e) => {
     e.preventDefault();
     setShowLoader(true);
-    const [, err] = await queryApi("product/" + id, formData, "PUT", true);
+    const [res, err] = await queryApi("product/" + id, formData, "PUT", true);
     if (err) {
       setShowLoader(false);
       setError({
         visible: true,
         message: JSON.stringify(err.errors, null, 2),
       });
-    } else history.push("/products");
+    } else 
+    
+    {
+      dispatch(updateProduct(res));
+      history.push("/products");
+      }
   };
+ 
   useEffect(() => {
-    async function fetchData() {
-      const [res, err] = await queryApi("product/" + id);
-      setError({
-        visible: true,
-        message: JSON.stringify(err?.errors, null, 2),
-      });
-      const rendred = {title : res.title,description : res.description, price : res.price,image : res.image,likes : res.likes};
-      setFormData(rendred);
-      console.log(formData);
-    }
-    fetchData();
-    // eslint-disable-next-line
-  }, [id]);
+    const rendred = {title : selectedProduct.title,description : selectedProduct.description, price : selectedProduct.price,image : selectedProduct.image,likes : selectedProduct.likes};
+    setFormData(rendred);
+    if (!selectedProduct) history.replace("/products");
+   
+  }, [selectedProduct,history]);
   return (
     <Wrapper className="fade">
       <Title>Update product</Title>

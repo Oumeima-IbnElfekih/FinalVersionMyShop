@@ -1,28 +1,13 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import products from "../products.json";
-import { queryApi } from "../utils/queryApi";
-import Product from "./Product";
+import { useSelector } from "react-redux";
 export default function ProductDetails(props) {
-  const id = props.match.params.id; /*We used props.match.params.name; 
- This is given by the react-router-dom and will help us get relevant information about our navigation 
- behavior. The router will automatically match the passes prop to the name we assigned in the Route. */
- const [error, setError] = useState({ visible: false, message: "" });
- const [toRender, setToRender] = useState({});
-
-  // const toRender = products.filter((product) => product.title === name)[0];
-  useEffect(() => {
-    async function fetchData() {
-      const [res, err] = await queryApi("product/" + id);
-      setError({
-        visible: true,
-        message: JSON.stringify(err?.errors, null, 2),
-      });
-      setToRender(res);
-    }
-    fetchData();
-    // eslint-disable-next-line
-  }, [id]);
+  const id = props.match.params.id;
+  const [error, setError] = useState({ visible: false, message: "" });
+  const toRender = useSelector((state) =>
+   state.products.products.find((item) => item._id === id)
+     );
+ 
   return (
     <>
       {/* We also have a “history” prop that contains the history of our page navigation */}

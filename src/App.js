@@ -71,11 +71,14 @@ our page will render <p>Default rendered page!</p>*/
 //#region Lazy Loading and suspense
 //. Apply lazy loading
 
-import React, { Suspense } from "react";
+import React, { Suspense ,useState, useEffect} from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import "./App.css";
 import styled from "styled-components";
 import Header from "./components/Navbar";
+import { fetchProducts } from "./redux/slices/productsSlice";
+import { useDispatch } from "react-redux";
+import Cart from "./Cart";
 /*This will automatically apply lazy loading on the component. Note that we can use the same logic inside 
 the pages if we have a lot of conditional rendering. */
 const Home = React.lazy(() => import("./Home"));
@@ -85,7 +88,10 @@ const AddProduct = React.lazy(() => import("./components/AddProduct"));
 const UpdateProduct = React.lazy(() => import("./components/UpdateProduct"));
 
 function App() {
-
+  const dispatch = useDispatch();
+  useEffect(() => {
+  dispatch(fetchProducts());
+  }, [dispatch]);
   return (
     <>
     <Header></Header>
@@ -124,6 +130,10 @@ our page will render <p>Default rendered page!</p> */}
                    <Route
                     path="/update/:id"
                     render={(props) => <UpdateProduct {...props} />}
+                  ></Route>
+                  <Route
+                    path="/cart"
+                    render={(props) => <Cart {...props} />}
                   ></Route>
             <Route exact render={() => <p>Page not found!</p>}></Route>
           </Switch>

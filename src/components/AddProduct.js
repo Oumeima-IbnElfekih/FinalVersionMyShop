@@ -3,7 +3,10 @@ import styled from "styled-components";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { queryApi } from "../utils/queryApi";
+import { useDispatch } from "react-redux";
+import { addProduct } from "../redux/slices/productsSlice";
 export default function AddProduct() {
+  const dispatch = useDispatch();
   const history = useHistory();
   const [showLoader, setShowLoader] = useState(false);
   const [error, setError] = useState({ visible: false, message: "" });
@@ -22,15 +25,16 @@ export default function AddProduct() {
   const onSubmit = async (e) => {
     e.preventDefault();
     setShowLoader(true);
-    const [, err] = await queryApi("product", formData, "POST", true);
+    const [res, err] = await queryApi("product", formData, "POST", true);
     if (err) {
       setShowLoader(false);
       setError({
         visible: true,
         message: JSON.stringify(err.errors, null, 2),
       });
-    } else history.push("/products");
-  };
+    } else {
+      dispatch(addProduct(res)); history.push("/products");}
+    };
   return (
     <Wrapper className="fade">
       <Title>Add new product</Title>
