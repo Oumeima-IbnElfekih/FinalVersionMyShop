@@ -17,7 +17,8 @@
 .env.development.local
 .env.test.local
 .env.production.local
-
+.lsp/.cache
+.clj-kondo/.cache/2021.10.20-SNAPSHOT
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
