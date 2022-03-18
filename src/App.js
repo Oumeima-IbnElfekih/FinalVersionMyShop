@@ -88,10 +88,8 @@ const AddProduct = React.lazy(() => import("./components/AddProduct"));
 const UpdateProduct = React.lazy(() => import("./components/UpdateProduct"));
 
 function App() {
-  const dispatch = useDispatch();
-  useEffect(() => {
-  dispatch(fetchProducts());
-  }, [dispatch]);
+  
+
   return (
     <>
     <Header></Header>

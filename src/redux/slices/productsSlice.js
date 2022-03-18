@@ -22,14 +22,19 @@ const productsSlice = createSlice({
         unselectProduct(state) {
             state.selectedProduct = null;
         },
+
         deleteProduct: (state, action) => {
            
             const payload = action.payload;
-            const index = state.products.findIndex((item) => item._id === payload);
+            console.log("payload"+payload)
+
+            const p = state.products.find((item) => item._id === payload);
+            const index = state.products.indexOf(p);
             console.log("index"+index)
             if (index !== -1) {
                 state.products.splice(index, 1);
             }
+            
         },
         updateProduct: (state, action) => {
             const payload = action.payload;

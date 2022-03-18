@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import {
   
-  selectProduct,
-  
+selectProduct,
   } from "../redux/slices/productsSlice";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
@@ -25,7 +24,6 @@ export default function Product(props) {
   };
   const updateProduct = () => {
     dispatch(selectProduct(product));
-    console.log("product",product);
     history.replace("/update/" + product._id);
     };
     const addToCart = (p) => {
@@ -41,43 +39,44 @@ export default function Product(props) {
 <ProductFrameBest>
       <ProductImageWrapperBest>
         <ProductImageBest src={
- process.env.REACT_APP_API_URL_UPLOADS + "/" + product.image
+ process.env.REACT_APP_API_URL_UPLOADS + "/" + props.product.image
  }
 ></ProductImageBest>
       </ProductImageWrapperBest>
       <ProductInfoWrapperBest>
       <span>Best Product</span>
         <span>
-          <a href={"/product/" + product._id}>{product.title}</a>
+          <a href={"/product/" + props.product._id}>{props.product.title}</a>
         </span>
-        <span> {product.price} DT </span>
+        <span> {props.product.price} DT </span>
         <span>Likes : {product.likes} </span>
         <Button onClick={addLike}>Like</Button>
         <Action>
         <ButtonUpdate onClick={updateProduct}>
         Update
       </ButtonUpdate>
-        <ButtonDelete onClick={() => props.deleteProduct(product._id)}>
+        <ButtonDelete onClick={() => props.deleteProduct(props.product._id)}>
         Delete
       </ButtonDelete>
       
         </Action>
+        <ButtonCart onClick={()=>addToCart(props.product)}>ADD TO CART + </ButtonCart>
       </ProductInfoWrapperBest>
     </ProductFrameBest>
     ):(
     <ProductFrame>
       <ProductImageWrapper>
         <ProductImage src={
- process.env.REACT_APP_API_URL_UPLOADS + "/" + product.image
+ process.env.REACT_APP_API_URL_UPLOADS + "/" + props.product.image
  }></ProductImage>
  
       </ProductImageWrapper>
       <ProductInfoWrapper>
      
         <span>
-          <a href={"/product/" + product._id}>{product.title}</a>
+          <a href={"/product/" + props.product._id}>{props.product.title}</a>
         </span>
-        <span> {product.price} DT </span>
+        <span> {props.product.price} DT </span>
         <span>Likes : {product.likes} </span>
                          
         <Button onClick={addLike}>Like</Button>
@@ -85,12 +84,12 @@ export default function Product(props) {
         <ButtonUpdate onClick={updateProduct}>
         Update
       </ButtonUpdate>
-        <ButtonDelete onClick={() => props.deleteProduct(product._id)}>
+        <ButtonDelete onClick={() => props.deleteProduct(props.product._id)}>
         Delete
       </ButtonDelete>
       
         </Action>
-        <ButtonCart onClick={()=>addToCart(product)}>ADD TO CART + </ButtonCart>
+        <ButtonCart onClick={()=>addToCart(props.product)}>ADD TO CART + </ButtonCart>
       </ProductInfoWrapper>
     </ProductFrame>
     )

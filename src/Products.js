@@ -1,18 +1,20 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import styled from "styled-components";
 import products from "./products.json";
 import Product from "./components/Product";
 import { useApi } from "./hooks/useApi";
 import { queryApi } from "./utils/queryApi";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteProduct, selectProducts } from "../src/redux/slices/productsSlice";
+import { deleteProduct, fetchProducts, selectProducts } from "../src/redux/slices/productsSlice";
 export default function Products(props) {
   const [products, err] = useSelector(selectProducts);
-  const [text, setText] = React.useState("");
   const [search, setSearch] = React.useState("");
-  
+
   const dispatch = useDispatch();
-  
+  useEffect(() => {
+    dispatch(fetchProducts());
+    }, [dispatch]);
+  console.log('products',products);
   const filteredProducts = useMemo(
     () => {
       if(!search) return products;
@@ -23,18 +25,19 @@ export default function Products(props) {
         },
     [search,products]
   );
+  console.log('filtered',filteredProducts)
   
   const handleSearch = (event) => {
     setSearch(event.target.value);
     console.log(search);
   };
   const deleProduct = async (id) => {
-    console.log(id);
     const [res,err] = await queryApi("product/" + id, {}, "DELETE");
     if (err) {
       console.log("err",err);
     } else 
     {dispatch(deleteProduct(id))} 
+  
   };
   return (
     <>
@@ -69,8 +72,9 @@ export default function Products(props) {
       </Search>
 
       <ProductsWrapper>
-        {err && <Errors>{err}</Errors>}
+       
         {filteredProducts?.map((product, index) => (
+          console.log('affichage',product),
           <Product
             {...props}
             product={product}

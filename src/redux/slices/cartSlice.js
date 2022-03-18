@@ -10,14 +10,14 @@ export const cartSlice = createSlice({
         increment: (state, action) => {
            
             const payload = action.payload;
-            console.log("payload",payload)
+          
             const index = state.cart.findIndex((item) => item._id === payload._id);
-            console.log("index 1 ",index)
+           
             if (index !== -1) {
-                console.log("index 1 ",index)
+         
                 state.cart[index].quantity += 1;
             } else {
-                console.log("index 3 ",index)
+               
                 state.cart.push({
                     ...payload,
                     quantity: 1
